@@ -7,6 +7,7 @@ import org.flowable.engine.task.Comment;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import com.itblare.workflow.support.enumerate.CommentType;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,9 +78,10 @@ public interface ProcessTaskService {
      * @param processInstanceId 流程实例ID
      * @param userId            用户ID
      * @param commentType       执行批注类型
+     * @param message           批注内容
      * @author Blare
      */
-    void addTypeComment(String taskId, String processInstanceId, String userId, CommentType commentType);
+    void addTypeComment(String taskId, String processInstanceId, String userId, CommentType commentType, String message);
 
     /**
      * 用户任务批注
@@ -145,7 +147,7 @@ public interface ProcessTaskService {
      *
      * @param taskId        任务ID
      * @param userId        用户ID
-     * @param groupIds      用户组
+     * @param groupIds      参与用户组
      * @param involveUserId 参与人用户ID
      * @author Blare
      */
