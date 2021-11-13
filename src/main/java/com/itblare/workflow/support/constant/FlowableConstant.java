@@ -87,4 +87,6 @@ public class FlowableConstant {
      * 部署ZIP压缩包类型
      */
     public final static String FILE_EXTENSION_ZIP = ".zip";
+
+    public final static String PROCESS_INSTANCE_FORM_DATA = "processInstanceFormData";
 }
