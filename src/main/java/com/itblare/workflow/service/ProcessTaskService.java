@@ -30,7 +30,7 @@ public interface ProcessTaskService {
     void complete(TaskExecDto taskExecDto);
 
     /**
-     * 任务签收
+     * 任务签收（认领）
      *
      * @param taskClaimDto 任务参数
      * @author Blare
@@ -38,7 +38,7 @@ public interface ProcessTaskService {
     void claim(TaskCommonDto taskClaimDto);
 
     /**
-     * 任务反签收
+     * 任务反签收（取消认领）
      *
      * @param taskClaimDto 任务参数
      * @author Blare

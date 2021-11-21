@@ -74,4 +74,13 @@ public interface ProcessInstanceService {
      * @author Blare
      */
     HistoricProcessInstance getHistoricById(String processInstanceId);
+
+    /**
+     * 查询流程实例图
+     *
+     * @param processInstanceId 流程实例ID
+     * @return {@link byte[]}
+     * @author Blare
+     */
+    byte[] generateImageByProcInstId(String processInstanceId);
 }

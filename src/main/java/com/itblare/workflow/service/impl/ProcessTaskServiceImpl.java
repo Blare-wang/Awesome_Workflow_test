@@ -5,6 +5,7 @@ import com.itblare.workflow.service.PermissionService;
 import com.itblare.workflow.service.ProcessTaskService;
 import com.itblare.workflow.support.constant.FlowableConstant;
 import com.itblare.workflow.support.enumerate.CommentType;
+import com.itblare.workflow.support.exceptions.FlowableNoPermissionException;
 import com.itblare.workflow.support.flowcmd.AddCcIdentityLinkCmd;
 import com.itblare.workflow.support.flowcmd.CompleteTaskReadCmd;
 import com.itblare.workflow.support.model.req.*;
@@ -12,6 +13,7 @@ import com.itblare.workflow.support.utils.CommonUtil;
 import com.itblare.workflow.support.utils.FlowableUtil;
 import org.flowable.bpmn.model.UserTask;
 import org.flowable.common.engine.api.FlowableException;
+import org.flowable.common.engine.api.FlowableObjectNotFoundException;
 import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.engine.task.Comment;
 import org.flowable.identitylink.api.IdentityLink;
@@ -44,8 +46,7 @@ public class ProcessTaskServiceImpl extends FlowableFactory implements ProcessTa
         Task task = getTaskNotNull(taskId);
         if (!permissionService.isTaskOfOwnerOrAssignee(currUserId, task)) {
             if (CommonUtil.isEmptyAfterStrip(task.getScopeType()) && !permissionService.validateIfUserIsInitiatorAndCanCompleteTask(currUserId, task)) {
-                // throw new FlowableNoPermissionException("User does not have permission");
-                throw new FlowableException("用户无权限");
+                throw new FlowableNoPermissionException("用户无权限!");
             }
         }
 
@@ -60,12 +61,10 @@ public class ProcessTaskServiceImpl extends FlowableFactory implements ProcessTa
                         task.getTaskDefinitionKey());
                 boolean modifyProcessInstanceFormData = CommonUtil.isEmptyAfterStrip(startFormKey) && CommonUtil.isEmptyAfterStrip(taskFormKey) && startFormKey.equals(taskFormKey);
                 if (!modifyProcessInstanceFormData) {
-                    // throw new FlowableNoPermissionException("User does not have permission");
-                    throw new FlowableException("用户无权限");
+                    throw new FlowableNoPermissionException("用户无权限!");
                 }
             }
             // 允许任务表单修改流程表单场景 end
-
             // 非会签用户节点，默认设置流程变量 __taskDefinitionKey__=currUserId，用于存储该节点执行人，且以最近的执行人为准
             UserTask userTask = (UserTask) FlowableUtil.getFlowElement(repositoryService,
                     task.getProcessDefinitionId(), task.getTaskDefinitionKey());
@@ -229,7 +228,7 @@ public class ProcessTaskServiceImpl extends FlowableFactory implements ProcessTa
     public Task getTaskNotNull(String taskId) {
         final Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (Objects.isNull(task)) {
-            throw new FlowableException("任务【id："+taskId+"】不存在！");
+            throw new FlowableObjectNotFoundException("任务【id："+taskId+"】不存在！");
         }
         return task;
     }
@@ -241,7 +240,11 @@ public class ProcessTaskServiceImpl extends FlowableFactory implements ProcessTa
 
     @Override
     public HistoricTaskInstance getHistoricTaskInstanceNotNull(String taskId) {
-        return null;
+        final HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+        if (Objects.isNull(historicTaskInstance)) {
+            throw new FlowableObjectNotFoundException("任务【id："+taskId+"】不存在！");
+        }
+        return historicTaskInstance;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.itblare.workflow.service.impl;
 
 import org.flowable.engine.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -27,4 +29,5 @@ public class FlowableFactory {
     protected HistoryService historyService;
     @Autowired
     protected FormService formService;
+    protected Logger logger = LoggerFactory.getLogger(FlowableFactory.class);
 }
